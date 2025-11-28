@@ -4,10 +4,22 @@ Sema Salama is a Chrome extension that detects and blurs local-language hate spe
 
 ## Features
 
-*   **Blur Filter:** Automatically blurs detected abusive text directly within social media comments.
+*   **Blur Filter:** Automatically blurs detected abusive text directly within comments on social media and other websites.
 *   **Reveal Button:** A "👁 Reveal" button appears next to each blurred comment to view the original text.
 *   **Personal Blocklist:** Users can add custom words to their blocklist via the extension popup.
+*   **Abuse Log:** The extension logs abusive comments with information about the abuser (if detectable), the words used, the URL, and the time. Users can view and clear these logs from the popup.
+*   **Expanded Dataset:** Includes abusive words in multiple African languages and English for broader coverage.
+*   **All URLs Support:** Works on all websites, not just social media platforms.
 *   **Privacy-Focused:** All processing happens locally in your browser. No data is ever sent to a server.
+
+
+## Using the Extension
+
+1. **Blurred Comments:** Abusive words are automatically blurred when detected.  
+2. **Reveal Comments:** Click the "👁 Reveal" button to temporarily view the original comment.  
+3. **Manage Blocklist:** Open the extension popup to add or remove custom words from your personal    blocklist.  
+4. **View Abuse Logs:** In the popup, scroll to the "Abuse Log" section to see a history of abusive comments. Use the "Clear Abuse Log" button to delete all entries.
+
 
 ## Installation
 
