@@ -3,6 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const blocklistInput = document.getElementById('blocklist-input');
     const blocklistEl = document.getElementById('blocklist');
 
+    const abuseLogContainer = document.getElementById('abuse-log-container');
+    const clearLogsButton = document.getElementById('clear-logs');
+
+    // Personal Blocklist Functions
     const getBlocklist = async () => {
         const result = await chrome.storage.local.get('customBlocklist');
         return result.customBlocklist || [];
@@ -68,4 +72,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     getBlocklist().then(renderBlocklist);
+
+    // Abuse Log Functions 
+    const renderAbuseLog = async () => {
+        const result = await chrome.storage.local.get('abuseLog');
+        const abuseLog = result.abuseLog || [];
+        abuseLogContainer.innerHTML = '';
+
+        if (abuseLog.length === 0) {
+            abuseLogContainer.innerHTML = '<p style="text-align:center; color:#888;">No abuse logs yet.</p>';
+            return;
+        }
+
+        abuseLog.forEach(entry => {
+            const div = document.createElement('div');
+            div.style.borderBottom = '1px solid #ccc';
+            div.style.marginBottom = '5px';
+            div.style.paddingBottom = '5px';
+            div.innerHTML = `
+                <strong>Abuser:</strong> ${entry.abuser} <br>
+                <strong>Words:</strong> ${entry.words.join(', ')} <br>
+                <strong>URL:</strong> ${entry.url} <br>
+                <strong>Time:</strong> ${new Date(entry.timestamp).toLocaleString()}
+            `;
+            abuseLogContainer.appendChild(div);
+        });
+    };
+
+    clearLogsButton.addEventListener('click', async () => {
+        await chrome.storage.local.set({ abuseLog: [] });
+        renderAbuseLog();
+    });
+
+    // Initial render
+    renderAbuseLog();
 });
