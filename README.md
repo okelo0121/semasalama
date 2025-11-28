@@ -136,7 +136,3 @@ Contributions are welcome! Please ensure code passes linting and type checking:
 npm run lint
 npm run typecheck
 ```
-
-## License
-
-[Add your license information here]
