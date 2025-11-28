@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sema Salama</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body class="popup-body">
+    <div class="popup-container">
+        <h1 class="popup-title">Sema Salama</h1>
+        <p style="text-align: center; margin-bottom: 20px; font-size: 13px; color: #555;">Manage your personal blocklist. Words you add here will be blurred across supported sites.</p>
+        <form id="blocklist-form">
+            <input type="text" id="blocklist-input" placeholder="Add a word to block..." autocomplete="off"/>
+            <button type="submit">Add</button>
+        </form>
+        <ul id="blocklist"></ul>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
