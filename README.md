@@ -1,5 +1,9 @@
 # Sema Salama Chrome & Firefox Extension
 
+[![CI](https://github.com/okelo0121/semasalama/actions/workflows/ci.yml/badge.svg)](https://github.com/okelo0121/semasalama/actions/workflows/ci.yml)
+
+> **Submission status:** The Chrome Web Store submission is under review; a public deployment link is not available. Evaluation should be based on the attached demo recording (Google Drive) while review is pending.
+
 Sema Salama is a browser extension that detects and blurs local-language hate speech on social media platforms, with a focus on privacy and user control. Built with React, TypeScript, and Vite.
 
 ## Features
@@ -123,30 +127,15 @@ The extension uses the following configuration files:
 
 The icons for this extension are located in the `images` directory. The manifest uses `images/logo.png` for all icon sizes. You can replace these with your own icons if desired.
 
-## Deployment
+## Demo & Submission
 
-### Chrome Web Store
+A demo recording is available on Google Drive and has been included in the submission materials. The Drive file is shared with "Anyone with the link (Viewer)" to allow access without signing in.
 
-1.  **Prepare Your Extension:**
-    - Ensure `manifest.json` has the correct version number
-    - Build the extension: `npm run build`
-    - Remove development files
+Demo video (Drive folder): https://drive.google.com/drive/folders/1f4dG8u6mMbCeLLBxHDxIaofP_1U5hQN1?usp=drive_link
 
-2.  **Package Your Extension:**
-    - Create a `.zip` file containing the built extension files and `images/` folder
+The recording demonstrates the key features: install, per-word blur, reveal confirmation, custom blocklist management, and privacy controls. The Chrome Web Store submission is currently under review; a public store link is therefore not available. The Drive recording is provided for evaluation during this period.
 
-3.  **Publish:**
-    - Go to the [Chrome Developer Dashboard](https://chrome.google.com/webstore/developer/dashboard)
-    - Sign in with your Google account (one-time registration fee required)
-    - Click "Add new item" and upload the `.zip` file
-    - Fill out store listing information
-    - Submit for review (typically 1-3 days)
 
-### Firefox Add-ons
-
-1.  Build the extension for Firefox using files in the `firefox/` directory
-2.  Submit to [Firefox Add-ons](https://addons.mozilla.org/)
-3.  Follow Mozilla's review guidelines and submission process
 
 ## Contributing
 

@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const abuseLogContainer = document.getElementById('abuse-log-container');
     const clearLogsButton = document.getElementById('clear-logs');
+    const optOutCheckbox = document.getElementById('opt-out-abuse-log');
 
     // Personal Blocklist Functions
     const getBlocklist = async () => {
@@ -99,11 +100,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    // Load opt-out setting and wire checkbox
+    const loadOptOut = async () => {
+        const res = await chrome.storage.local.get('disableAbuseLog');
+        optOutCheckbox.checked = !!res.disableAbuseLog;
+    };
+
+    optOutCheckbox.addEventListener('change', async () => {
+        const enabled = !!optOutCheckbox.checked;
+        await chrome.storage.local.set({ disableAbuseLog: enabled });
+        if (enabled) {
+            // If user opts out, clear existing abuse logs to respect privacy
+            await chrome.storage.local.set({ abuseLog: [] });
+        }
+        // Re-render log area to reflect opt-out and cleared logs
+        renderAbuseLog();
+    });
+
     clearLogsButton.addEventListener('click', async () => {
         await chrome.storage.local.set({ abuseLog: [] });
         renderAbuseLog();
     });
 
-    // Initial render
-    renderAbuseLog();
+    // Initial render: load opt-out then render logs
+    loadOptOut().then(() => renderAbuseLog());
 });

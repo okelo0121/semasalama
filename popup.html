@@ -24,6 +24,12 @@
         <!-- Abuse Log Section -->
         <h2 style="font-size: 14px; margin-bottom: 5px;">Abuse Log</h2>
         <div id="abuse-log-container" style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 5px;"></div>
+
+        <label style="display:block; margin-top:8px; font-size:13px; color:#444;" title="When enabled, detection events will not be stored on your device.">
+            <input type="checkbox" id="opt-out-abuse-log" /> Disable local abuse logging (opt-out)
+            <div style="font-size:11px;color:#666;margin-top:4px;">Enabling this clears any existing logs and prevents further local storage of detection events.</div>
+        </label>
+
         <button id="clear-logs" style="margin-top: 5px; width: 100%;">Clear Abuse Log</button>
     </div>
 

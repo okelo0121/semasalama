@@ -65,6 +65,10 @@ const unblurAll = () => {
 // Log abusive comments per abuser
 const logAbuse = async (abuser, words) => {
     try {
+        // Respect user opt-out for abuse logging
+        const pref = await chrome.storage.local.get('disableAbuseLog');
+        if (pref.disableAbuseLog) return;
+
         const storage = await chrome.storage.local.get('abuseLog');
         const abuseLog = storage.abuseLog || [];
 
