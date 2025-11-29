@@ -167,4 +167,4 @@ npm run typecheck
 | Sharon Nkatha      | UI/UX Designer      | nkathasharon42@gmail.com           |
 | Einstein Dipondo   | UI/UX Designer      | einstenmarto30@gmail.com           |
 | Raymond Mbai       | Database Engineer   | Salimr80@yahoo.com                 |
-| Nelly Longesele    | Backend Development | N/A                                |
+| Nelly Longesele    | Backend Development | nellylongesele175@gmail.com                               |
