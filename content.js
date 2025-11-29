@@ -1,6 +1,18 @@
 let blockedWordsRegex = new RegExp('a^'); // Regex that never matches initially
 let isObserving = false;
 
+// Ensure styles for blurred words are injected
+const ensureStyles = () => {
+    if (document.getElementById('sema-syles')) return;
+    const style = document.createElement('style');
+    style.id = 'sema-syles';
+    style.textContent = `
+    .sema-blur { filter: blur(6px); -webkit-filter: blur(6px); cursor: pointer; transition: filter .15s; }
+    .sema-blur.revealed { filter: none; -webkit-filter: none; }
+    .sema-blur[data-sema-word] { padding: 0 2px; border-radius: 2px; }
+    `;
+    document.head && document.head.appendChild(style);
+};
 // High-level selectors for known social media + generic elements for all URLs
 const COMMENT_SELECTORS = [
     '[data-testid="tweetText"]',      // Twitter/X
@@ -41,15 +53,12 @@ const containsBlockedWord = (text) => {
     return blockedWordsRegex.test(text);
 };
 
-// Unblur all elements on the page
+// Unblur all processed elements and restore original HTML
 const unblurAll = () => {
-    document.querySelectorAll('.blurred-text').forEach(element => {
-        const originalContent = element.dataset.originalContent;
+    document.querySelectorAll('[data-sema-original]').forEach(element => {
+        const originalContent = element.dataset.semaOriginal;
         if (originalContent) element.innerHTML = originalContent;
-        element.classList.remove('blurred-text');
-        delete element.dataset.originalContent;
-        const button = element.querySelector('.reveal-button');
-        if (button) button.remove();
+        element.removeAttribute('data-sema-original');
     });
 };
 
@@ -75,38 +84,90 @@ const logAbuse = async (abuser, words) => {
     }
 };
 
-// Blur element and add reveal button
-const applyBlur = (element) => {
-    if (element.classList.contains('blurred-text') || element.closest('.blurred-text')) return;
+// Wrap matched words in the element with blurred spans and add per-word reveal
+const blurMatchesInElement = (element) => {
+    if (!element || element.nodeType !== Node.ELEMENT_NODE) return;
+    // Avoid processing interactive or already-processed containers
+    if (element.isContentEditable) return;
+    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA' || element.closest('[data-sema-original]')) return;
 
-    // Store original content
-    element.dataset.originalContent = element.innerHTML;
+    // Inject styles once
+    ensureStyles();
 
-    element.classList.add('blurred-text');
-    const revealButton = document.createElement('button');
-    revealButton.textContent = '👁 Reveal';
-    revealButton.className = 'reveal-button';
+    const text = element.textContent || '';
+    if (!containsBlockedWord(text)) return;
 
-    revealButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        element.classList.remove('blurred-text');
-        revealButton.remove();
-    }, { once: true });
+    // Save original HTML so we can restore later
+    if (!element.dataset.semaOriginal) element.dataset.semaOriginal = element.innerHTML;
 
-    element.prepend(revealButton);
+    // Walk text nodes and replace matched words with spans
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+            if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+            // ignore nodes inside our own spans
+            if (node.parentElement && node.parentElement.closest('.sema-blur')) return NodeFilter.FILTER_REJECT;
+            return NodeFilter.FILTER_ACCEPT;
+        }
+    });
 
-    // Log abusive words
-    const text = element.textContent;
-    const matchedWords = text.match(blockedWordsRegex);
-    if (matchedWords && matchedWords.length > 0) {
-        // Try to find abuser in test file or social media selectors
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    const matchedWords = [];
+
+    nodes.forEach(textNode => {
+        const val = textNode.nodeValue;
+        blockedWordsRegex.lastIndex = 0;
+        if (!blockedWordsRegex.test(val)) return;
+
+        const frag = document.createDocumentFragment();
+        let lastIndex = 0;
+        blockedWordsRegex.lastIndex = 0;
+        let m;
+        while ((m = blockedWordsRegex.exec(val)) !== null) {
+            const idx = m.index;
+            const matched = m[0];
+            // append text before match
+            if (idx > lastIndex) frag.appendChild(document.createTextNode(val.slice(lastIndex, idx)));
+            // create blurred span
+            const span = document.createElement('span');
+            span.className = 'sema-blur';
+            span.dataset.semaWord = matched;
+            span.textContent = matched;
+            span.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                const word = span.dataset.semaWord || span.textContent || '';
+                const confirmMsg = `This action will reveal potentially abusive content: "${word}". Do you want to continue?`;
+                // Use browser confirm to warn the user before revealing
+                try {
+                    const ok = confirm(confirmMsg);
+                    if (ok) {
+                        span.classList.add('revealed');
+                    }
+                } catch (err) {
+                    // Fallback: if confirm isn't available, reveal directly
+                    span.classList.add('revealed');
+                }
+            });
+            frag.appendChild(span);
+            matchedWords.push(matched.toLowerCase());
+            lastIndex = idx + matched.length;
+        }
+        // append remaining text
+        if (lastIndex < val.length) frag.appendChild(document.createTextNode(val.slice(lastIndex)));
+
+        // replace text node with fragment
+        textNode.parentNode.replaceChild(frag, textNode);
+    });
+
+    // Log abusive words for this element
+    if (matchedWords.length > 0) {
         const userNode = element.closest('.post')?.querySelector('.username') || 
                          element.closest('[data-testid="tweet"] [role="link"]') || 
                          element.closest('[data-ad-preview="message"]');
         const abuser = userNode ? userNode.textContent.trim().slice(0, 50) : "unknown";
-
-        logAbuse(abuser, matchedWords.map(w => w.toLowerCase()));
+        logAbuse(abuser, Array.from(new Set(matchedWords)));
     }
 };
 
@@ -115,22 +176,22 @@ const scanNode = (node) => {
     if (node.nodeType === Node.TEXT_NODE) {
         if (containsBlockedWord(node.textContent)) {
             const parent = node.parentNode;
-            if (parent && !parent.classList.contains('blurred-text') && !parent.closest('.reveal-button')) {
-                applyBlur(parent);
+            if (parent) {
+                blurMatchesInElement(parent);
             }
         }
     }
 
     if (node.nodeType === Node.ELEMENT_NODE) {
-        if (node.tagName === 'SCRIPT' || node.tagName === 'STYLE' || node.classList.contains('blurred-text')) {
+        if (node.tagName === 'SCRIPT' || node.tagName === 'STYLE' || node.hasAttribute('data-sema-original')) {
             return;
         }
 
         if (node.textContent && node.textContent.trim().length > 2) { // avoid empty nodes
             const selector = COMMENT_SELECTORS.join(',');
             if (node.matches(selector) && containsBlockedWord(node.textContent)) {
-                applyBlur(node);
-                return; // skip scanning children if parent is blurred
+                blurMatchesInElement(node);
+                return; // skip scanning children if parent is processed
             }
 
             node.childNodes.forEach(scanNode); // recursively scan children
