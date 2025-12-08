@@ -2,8 +2,6 @@
 
 [![CI](https://github.com/okelo0121/semasalama/actions/workflows/ci.yml/badge.svg)](https://github.com/okelo0121/semasalama/actions/workflows/ci.yml)
 
-> **Submission status:** The Chrome Web Store submission is under review; a public deployment link is not available. Evaluation should be based on the attached demo recording (Google Drive) while review is pending.
-
 Sema Salama is a browser extension that detects and blurs local-language hate speech on social media platforms, with a focus on privacy and user control. Built with React, TypeScript, and Vite.
 
 ## Features
@@ -126,15 +124,6 @@ The extension uses the following configuration files:
 ## Icons
 
 The icons for this extension are located in the `images` directory. The manifest uses `images/logo.png` for all icon sizes. You can replace these with your own icons if desired.
-
-## Demo & Submission
-
-A demo recording is available on Google Drive and has been included in the submission materials. The Drive file is shared with "Anyone with the link (Viewer)" to allow access without signing in.
-
-Demo video (Drive folder): https://drive.google.com/drive/folders/1f4dG8u6mMbCeLLBxHDxIaofP_1U5hQN1?usp=drive_link
-
-The recording demonstrates the key features: install, per-word blur, reveal confirmation, custom blocklist management, and privacy controls. The Chrome Web Store submission is currently under review; a public store link is therefore not available. The Drive recording is provided for evaluation during this period.
-
 
 
 ## Contributing
