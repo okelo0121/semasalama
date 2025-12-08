@@ -1,6 +1,9 @@
 # Sema Salama Chrome & Firefox Extension
 
 [![CI](https://github.com/okelo0121/semasalama/actions/workflows/ci.yml/badge.svg)](https://github.com/okelo0121/semasalama/actions/workflows/ci.yml)
+## Project Website
+Check out the live here:  
+[Live Extension](https://chrome.google.com/webstore/detail/lekjghdbiglnoeffhmbnaahcijehogln)
 
 Sema Salama is a browser extension that detects and blurs local-language hate speech on social media platforms, with a focus on privacy and user control. Built with React, TypeScript, and Vite.
 
