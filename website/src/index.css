@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #0a2540;
+  /* Deep blue */
+  --color-secondary: #0284c7;
+  /* Lighter blue */
+  --color-accent: #f9b132;
+  /* Orange/Yellow */
+  --color-brand-light: #e0f2fe;
+}
+
+body {
+  @apply bg-white text-slate-900 font-sans antialiased;
+}
