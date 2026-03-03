@@ -3,6 +3,7 @@
 [![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-Active-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white)](https://chromewebstore.google.com/detail/lekjghdbiglnoeffhmbnaahcijehogln?utm_source=item-share-cb)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Chrome%20|%20Edge%20|%20Firefox-lightgrey?style=for-the-badge)](https://github.com/YourUsername/Sema-Salama)
+website: https://semasalama.vercel.app/#
 
 > **"Safety is not a slogan. It’s something we build — together — with courage and code."**
 
